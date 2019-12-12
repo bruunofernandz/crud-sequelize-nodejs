@@ -34,29 +34,48 @@ exports.updateConsumo = async (req, res, next) => {
   next();
 };
 
-exports.create = async (req, res, next) => {
-    await consumo.create({
-        id: req.body.id,
-        json_value: req.body.valor
-    }).then(created => {
-        return created
-    }).catch(err => {
-        return res.status(500).json({ error: err })
-    })
-    next()
-}
 
-exports.delete = async (req, res, next) => {
-    const id = req.params.idDelete
-    await consumo.destroy({
-        where: { id: id }
-    }).then(created => {
-        return created
-    }).catch(err => {
-        return res.status(500).json({ error: err })
+exports.insertConsumo = async (req, res, next) => {
+  let insertDB;
+
+  try {
+    insertDB = await insertConsumo(req.body);
+
+    return res.send(insertDB);
+  } catch (err) {
+    return res.status(500).send({ success: false, error: `${err}` });
+  }
+  next();
+};
+exports.deleteConsumo = async (req, res, next) => {
+  let deleteDB;
+
+  try {
+    deleteDB = await deleteConsumo(req.body);
+
+    return res.send(`Dados deletados com sucesso: ${deleteDB}`);
+  } catch (err) {
+    return res.status(500).json({ success: false, error: `${err}` });
+  }
+
+  next();
+};
+
+deleteConsumo = async data => {
+  const { id } = await data;
+
+  return await consumo
+    .destroy({
+      where: { id: id }
     })
-    next()
-}
+    .then(del => {
+      if(del)
+        return del
+    })
+    .catch(err => {
+      return Promise.reject(new Error(err));
+    });
+};
 
 findConsumo = async hashUser => {
   return await consumo
@@ -87,5 +106,21 @@ updateConsumo = async (data, idUser) => {
     })
     .catch(err => {
       return Promise.reject(new Error(err));
+    });
+};
+
+insertConsumo = async data => {
+  const { id, json_value } = await data;
+
+  return await consumo
+    .create({
+      id,
+      json_value
+    })
+    .then(created => {
+      return created;
+    })
+    .catch(e => {
+      return Promise.reject(new Error(e));
     });
 };

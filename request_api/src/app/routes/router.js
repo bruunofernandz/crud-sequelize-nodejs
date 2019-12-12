@@ -12,7 +12,7 @@ module.exports = app => {
 
     app.put(`${rotaPadrao}/update/:idUser`, consumoController.updateConsumo)
 
-    app.post(`${rotaPadrao}/post`,consumoController.create);
+    app.post(`${rotaPadrao}/post`,consumoController.insertConsumo);
 
-    app.delete(`${rotaPadrao}/delete/:idDelete`, consumoController.delete)
+    app.delete(`${rotaPadrao}/delete`, consumoController.deleteConsumo)
 }
