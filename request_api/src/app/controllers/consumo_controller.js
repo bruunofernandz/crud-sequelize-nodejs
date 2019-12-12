@@ -6,7 +6,7 @@ exports.findConsumo = async (req, res, next) => {
   let selectDB;
 
   try {
-    selectDB = await findConsumo(req.body);
+    selectDB = await findConsumo(req.headers);
 
     res.send(selectDB);
 
